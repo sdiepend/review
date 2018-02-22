@@ -30,8 +30,8 @@ def cmr(name):
     
     hostname = re.sub(r'^.*[@:](.+\..+)[\:].+', r'\1', output).strip()
     
-    logger.info('URL safe project name:' + project_id_url)
-    logger.info('Remote hostname' + hostname)
+    logger.info('URL safe project name: ' + project_id_url)
+    logger.info('Remote hostname: ' + hostname)
     project_id_int = int(requests.get("http://" + hostname + "/api/v4/projects/" + project_id_url, headers=headers).json()['id'])
     payload = {
             'id': project_id_int,
@@ -40,8 +40,8 @@ def cmr(name):
             'title': name
             }
     req = requests.post('http://' + hostname + '/api/v4/projects/' + project_id_url + '/merge_requests', headers=headers, data=payload)
-    logger.info('Response Status:' + req.status_code)
-    print(req.text)
+    logger.info('Response Status: %d' % (req.status_code))
+    print(req.json())
 
 if __name__ == "__main__":
     fire.Fire(cmr)
