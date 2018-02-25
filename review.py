@@ -7,7 +7,7 @@ import os
 import logging
 
  
-def cmr(name):
+def cmr(name, assignee=None, ds=False):
     logger = logging.getLogger()
     logger.setLevel(logging.INFO)
     ch = logging.StreamHandler()
@@ -33,15 +33,53 @@ def cmr(name):
     logger.info('URL safe project name: ' + project_id_url)
     logger.info('Remote hostname: ' + hostname)
     project_id_int = int(requests.get("http://" + hostname + "/api/v4/projects/" + project_id_url, headers=headers).json()['id'])
+
     payload = {
             'id': project_id_int,
             'source_branch': name,
             'target_branch': 'master',
             'title': name
             }
+    if assignee:
+        assignee_id = _get_user_id(assignee, hostname)
+        if assignee_id:
+            assignee_id_int = int(assignee_id)
+        else:
+            print("Assignee not found")
+            return
+
+    payload['assignee_id'] = assignee_id_int
+
+    if ds:
+        payload['remove_source_branch'] = 'true'
+
     req = requests.post('http://' + hostname + '/api/v4/projects/' + project_id_url + '/merge_requests', headers=headers, data=payload)
     logger.info('Response Status: %d' % (req.status_code))
     print(req.json())
+
+
+def _get_user_id(assignee, hostname):
+    users = _get_users(hostname)
+    for user in users:
+        if user['name'] == assignee:
+            return user['id']
+    return None
+
+def _get_users(hostname, url=None):
+    gitlab_token = os.getenv('GITLAB_TOKEN')
+    headers = {'PRIVATE-TOKEN': gitlab_token}
+    if url:
+        print("Ja!")
+        response = requests.get(url, headers=headers)
+    else:
+        print("Eerste")
+        response = requests.get("http://" + hostname + "/api/v4/users?per_page=80", headers=headers)
+    users = response.json()
+    if 'next' in response.links:
+        print(response.links['next']['url'])
+        return users + _get_users(hostname, response.links['next']['url'])
+    else:
+        return users
 
 if __name__ == "__main__":
     fire.Fire(cmr)
