@@ -11,7 +11,7 @@ def cmr(name, assignee=None, ds=False):
     logger = logging.getLogger()
     logger.setLevel(logging.INFO)
     ch = logging.StreamHandler()
-    ch.setLevel(logging.DEBUG)
+    ch.setLevel(logging.WARNING)
     logger.addHandler(ch)
 
     gitlab_token = os.getenv('GITLAB_TOKEN')
@@ -70,14 +70,11 @@ def _get_users(hostname, url=None):
     gitlab_token = os.getenv('GITLAB_TOKEN')
     headers = {'PRIVATE-TOKEN': gitlab_token}
     if url:
-        print("Ja!")
         response = requests.get(url, headers=headers)
     else:
-        print("Eerste")
         response = requests.get("http://" + hostname + "/api/v4/users?per_page=80", headers=headers)
     users = response.json()
     if 'next' in response.links:
-        print(response.links['next']['url'])
         return users + _get_users(hostname, response.links['next']['url'])
     else:
         return users
