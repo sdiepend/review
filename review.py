@@ -56,7 +56,7 @@ def cmr(name, assignee=None, ds=False):
     req = requests.post('http://' + hostname + '/api/v4/projects/' + project_id_url + '/merge_requests', headers=headers, data=payload)
     logger.info('Response Status: %d' % (req.status_code))
     response_json = req.json()
-    print("Merge request successfully created with name {name}.\n Click here {url}".format(name=response_json['title'], url=response_json['']))
+    print("Merge request successfully created with name {name}.\n Click here {url}".format(name=response_json['title'], url=response_json['web_url']))
 
 
 def _get_user_id(assignee, hostname):
