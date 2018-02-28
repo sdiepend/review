@@ -92,3 +92,6 @@ def _get_users(hostname, url=None):
 
 if __name__ == "__main__":
     fire.Fire(cmr)
+
+def main():
+    fire.Fire(cmr)
