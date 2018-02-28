@@ -1,19 +1,30 @@
 #!/usr/bin/env python
-import requests
-import fire
-import subprocess
-import re
-import os
 import logging
+import os
+import re
+import subprocess
 
- 
-def cmr(name, assignee=None, ds=False):
+import fire
+import requests
+
+
+def cmr(name=None, assignee=None, ds=False, help=False):
+    """Create a gitlab merge request.
+
+    :param name(String): the name of your branch and merge request that will be created
+    :param assignee(String): the gitlab name to who you want to assign the MR
+    :param ds(Boolean): flag to mark if the source branch will be deleted after merging
+    :param help(Boolean): get usage info
+    """
     logger = logging.getLogger()
     logger.setLevel(logging.INFO)
     ch = logging.StreamHandler()
     ch.setLevel(logging.WARNING)
     logger.addHandler(ch)
-
+    
+    if help:
+        subprocess.run(['review.py', '--', '--help'])
+        return
     gitlab_token = os.getenv('GITLAB_TOKEN')
     if gitlab_token is None:
         print("No Gitlab private token found in environment variables, please set one and try again")
@@ -48,7 +59,7 @@ def cmr(name, assignee=None, ds=False):
             print("Assignee not found")
             return
 
-    payload['assignee_id'] = assignee_id_int
+        payload['assignee_id'] = assignee_id_int
 
     if ds:
         payload['remove_source_branch'] = 'true'
