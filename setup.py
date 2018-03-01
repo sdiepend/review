@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='reviewer',
-    version='0.0.1.dev2',
+    version='0.0.2',
     description='Easily create and manage gitlab merge requests from the commandline',
     url='https://github.com/sdiepend/review',
     author='Stijn Diependaele',
