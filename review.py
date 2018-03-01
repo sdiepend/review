@@ -23,12 +23,14 @@ def cmr(name=None, assignee=None, ds=False, help=False):
     logger.addHandler(ch)
     
     if help:
-        subprocess.run(['review.py', '--', '--help'])
+        subprocess.run(['review', '--', '--help'])
         return
+
     gitlab_token = os.getenv('GITLAB_TOKEN')
     if gitlab_token is None:
         print("No Gitlab private token found in environment variables, please set one and try again")
         return
+
     subprocess.run(['git', 'branch', name])
     subprocess.run(['git', 'push', 'origin', name])
     headers = {'PRIVATE-TOKEN': gitlab_token}
