@@ -7,6 +7,8 @@ Commandline tool to create gitlab merge requests.
 $ pip install reviewer
 ```
 
+Create a private access token for you user in gitlab and add it to your environment variables. You can also set in your .bashrc.
+
 ```shell
 $ export GITLAB_TOKEN=<token>
 ```
